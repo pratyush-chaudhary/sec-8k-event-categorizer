@@ -1,0 +1,8 @@
+{
+  "provider": "ollama",
+  "model": "llama3.2:latest",
+  "options": {
+    "temperature": 0.1,
+    "timeout": 30
+  }
+} 

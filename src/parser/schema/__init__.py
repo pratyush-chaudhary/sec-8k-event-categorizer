@@ -1,1 +1,1 @@
-# Schema definitions for event classification 
+# Schema definitions for event classification

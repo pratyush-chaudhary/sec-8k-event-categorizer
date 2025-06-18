@@ -6,22 +6,22 @@ import os
 import unittest
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from parser.text_extractor import Filing8KTextExtractor
 
 
 class TestFiling8KTextExtractor(unittest.TestCase):
     """Test cases for Filing8KTextExtractor class."""
-    
+
     def setUp(self):
         """Set up test fixtures."""
         self.extractor = Filing8KTextExtractor()
-        
+
     def test_extract_from_html_basic(self):
         """Test basic HTML text extraction."""
         print("\n--- Testing basic HTML extraction ---")
-        
+
         # Simple HTML content
         html_content = """
         <html>
@@ -32,20 +32,20 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         </body>
         </html>
         """
-        
+
         clean_text = self.extractor.extract_from_html(html_content)
-        
+
         # Should extract business content
-        self.assertIn('important business content', clean_text)
-        self.assertIn('quarterly earnings', clean_text)
-        self.assertIn('Revenue increased', clean_text)
-        
+        self.assertIn("important business content", clean_text)
+        self.assertIn("quarterly earnings", clean_text)
+        self.assertIn("Revenue increased", clean_text)
+
         print(f"✓ Extracted text: {clean_text}")
-    
+
     def test_noise_filtering(self):
         """Test filtering of SEC/EDGAR boilerplate."""
         print("\n--- Testing noise filtering ---")
-        
+
         noisy_html = """
         <html>
         <head><title>SEC Filing</title></head>
@@ -61,30 +61,30 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         </body>
         </html>
         """
-        
+
         clean_text = self.extractor.extract_from_html(noisy_html)
-        
+
         # Should contain business content
-        self.assertIn('important business content', clean_text)
-        self.assertIn('quarterly earnings', clean_text)
-        
+        self.assertIn("important business content", clean_text)
+        self.assertIn("quarterly earnings", clean_text)
+
         # Should NOT contain noise
-        self.assertNotIn('SEC.gov', clean_text)
-        self.assertNotIn('EDGAR', clean_text)
-        self.assertNotIn('Washington, D.C.', clean_text)
-        self.assertNotIn('Navigation table', clean_text)
-        
+        self.assertNotIn("SEC.gov", clean_text)
+        self.assertNotIn("EDGAR", clean_text)
+        self.assertNotIn("Washington, D.C.", clean_text)
+        self.assertNotIn("Navigation table", clean_text)
+
         print(f"✓ Filtered text: {clean_text}")
 
     def test_empty_html(self):
         """Test handling of empty or minimal HTML."""
         print("\n--- Testing empty HTML handling ---")
-        
+
         # Empty HTML
         empty_html = "<html><body></body></html>"
         clean_text = self.extractor.extract_from_html(empty_html)
         self.assertEqual(clean_text, "")
-        
+
         # HTML with only noise
         noise_only_html = """
         <html>
@@ -97,13 +97,13 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         """
         clean_text = self.extractor.extract_from_html(noise_only_html)
         self.assertEqual(clean_text, "")
-        
+
         print("✓ Empty HTML handled correctly")
 
     def test_complex_html_structure(self):
         """Test extraction from complex HTML structure."""
         print("\n--- Testing complex HTML structure ---")
-        
+
         complex_html = """
         <html>
         <head>
@@ -132,21 +132,21 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         </body>
         </html>
         """
-        
+
         clean_text = self.extractor.extract_from_html(complex_html)
-        
+
         # Should extract business content
-        self.assertIn('Apple Inc.', clean_text)
-        self.assertIn('financial results', clean_text)
-        self.assertIn('quarterly revenue', clean_text)
-        self.assertIn('Item 2.02', clean_text)
-        
+        self.assertIn("Apple Inc.", clean_text)
+        self.assertIn("financial results", clean_text)
+        self.assertIn("quarterly revenue", clean_text)
+        self.assertIn("Item 2.02", clean_text)
+
         # Should not contain navigation or footer noise
-        self.assertNotIn('Navigation menu', clean_text)
-        
+        self.assertNotIn("Navigation menu", clean_text)
+
         print(f"✓ Complex structure handled: {len(clean_text)} characters")
         print(f"Preview: {clean_text[:200]}...")
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2) 
+    unittest.main(verbosity=2)

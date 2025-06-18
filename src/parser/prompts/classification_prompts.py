@@ -5,16 +5,16 @@ from typing import Dict, List, Any
 
 class ClassificationPrompts:
     """Collection of prompt templates for event classification."""
-    
+
     @staticmethod
     def basic_classification_prompt(text: str, event_types: List[str]) -> str:
         """
         Generate a basic classification prompt.
-        
+
         Args:
             text: 8-K filing text to classify
             event_types: List of possible event types
-            
+
         Returns:
             Formatted prompt string
         """
@@ -23,42 +23,42 @@ class ClassificationPrompts:
 {text}
 
 Choose from these categories:
-{', '.join(event_types)}
+{", ".join(event_types)}
 
 Provide your answer as 'Event Type: [Category], Relevant: [true/false]'.
 
 The event should be marked as 'Relevant: true' if it could significantly impact the company's stock price or business operations, and 'Relevant: false' if it's a minor administrative or routine matter.
 
 Classification:"""
-        
+
         return prompt
-    
+
     @staticmethod
     def detailed_classification_prompt(text: str, event_configs: Dict[str, Any]) -> str:
         """
         Generate a detailed classification prompt with event descriptions.
-        
+
         Args:
             text: 8-K filing text to classify
             event_configs: Dictionary of event configurations with descriptions
-            
+
         Returns:
             Formatted prompt string
         """
         # Build event type descriptions
         event_descriptions = []
         event_types = []
-        
+
         for event_type, config in event_configs.items():
             event_types.append(event_type)
-            description = config.get('description', '')
-            keywords = config.get('keywords', [])
-            
+            description = config.get("description", "")
+            keywords = config.get("keywords", [])
+
             desc_text = f"- {event_type}: {description}"
             if keywords:
                 desc_text += f" (Keywords: {', '.join(keywords)})"
             event_descriptions.append(desc_text)
-        
+
         prompt = f"""You are an expert financial analyst. Classify the following 8-K filing event:
 
 Filing Content:
@@ -92,18 +92,18 @@ Event Type: [Category], Relevant: [true/false]
 Reasoning: [Brief explanation of your decision]
 
 Classification:"""
-        
+
         return prompt
-    
+
     @staticmethod
     def chain_of_thought_prompt(text: str, event_types: List[str]) -> str:
         """
         Generate a chain-of-thought classification prompt.
-        
+
         Args:
             text: 8-K filing text to classify
             event_types: List of possible event types
-            
+
         Returns:
             Formatted prompt string
         """
@@ -113,7 +113,7 @@ Filing Content:
 {text}
 
 Available Categories:
-{', '.join(event_types)}
+{", ".join(event_types)}
 
 Please follow these steps:
 
@@ -136,19 +136,21 @@ Provide your final answer as:
 Event Type: [Category], Relevant: [true/false]
 
 Analysis:"""
-        
+
         return prompt
-    
+
     @staticmethod
-    def few_shot_prompt(text: str, event_types: List[str], examples: List[Dict[str, str]] = None) -> str:
+    def few_shot_prompt(
+        text: str, event_types: List[str], examples: List[Dict[str, str]] = None
+    ) -> str:
         """
         Generate a few-shot classification prompt with examples.
-        
+
         Args:
             text: 8-K filing text to classify
             event_types: List of possible event types
             examples: List of example classifications
-            
+
         Returns:
             Formatted prompt string
         """
@@ -156,18 +158,18 @@ Analysis:"""
             examples = [
                 {
                     "text": "Apple Inc. announced the acquisition of XYZ Corp for $1.2 billion...",
-                    "classification": "Event Type: Acquisition, Relevant: true"
+                    "classification": "Event Type: Acquisition, Relevant: true",
                 },
                 {
                     "text": "The company announced quarterly earnings results...",
-                    "classification": "Event Type: Financial Event, Relevant: true"
+                    "classification": "Event Type: Financial Event, Relevant: true",
                 },
                 {
                     "text": "John Smith was appointed as new Chief Technology Officer...",
-                    "classification": "Event Type: Personnel Change, Relevant: true"
-                }
+                    "classification": "Event Type: Personnel Change, Relevant: true",
+                },
             ]
-        
+
         # Build examples section
         examples_text = []
         for i, example in enumerate(examples, 1):
@@ -175,9 +177,9 @@ Analysis:"""
             examples_text.append(f"Text: {example['text']}")
             examples_text.append(f"Classification: {example['classification']}")
             examples_text.append("")
-        
+
         prompt = f"""Classify 8-K filing events into these categories:
-{', '.join(event_types)}
+{", ".join(event_types)}
 
 {chr(10).join(examples_text)}
 
@@ -185,19 +187,19 @@ Now classify this filing:
 Text: {text}
 
 Classification:"""
-        
+
         return prompt
-    
+
     @staticmethod
     def validation_prompt(text: str, classification: str, event_types: List[str]) -> str:
         """
         Generate a prompt to validate a classification result.
-        
+
         Args:
             text: Original 8-K filing text
             classification: Proposed classification
             event_types: List of valid event types
-            
+
         Returns:
             Validation prompt string
         """
@@ -208,7 +210,7 @@ Original Filing:
 
 Proposed Classification: {classification}
 
-Valid Categories: {', '.join(event_types)}
+Valid Categories: {", ".join(event_types)}
 
 Questions to consider:
 1. Is the event type correct?
@@ -220,7 +222,7 @@ Respond with:
 - "INVALID: [reason]" if there are issues
 
 Your assessment:"""
-        
+
         return prompt
 
 
@@ -240,6 +242,8 @@ def get_cot_prompt(text: str, event_types: List[str]) -> str:
     return ClassificationPrompts.chain_of_thought_prompt(text, event_types)
 
 
-def get_few_shot_prompt(text: str, event_types: List[str], examples: List[Dict[str, str]] = None) -> str:
+def get_few_shot_prompt(
+    text: str, event_types: List[str], examples: List[Dict[str, str]] = None
+) -> str:
     """Get a few-shot prompt with examples."""
-    return ClassificationPrompts.few_shot_prompt(text, event_types, examples) 
+    return ClassificationPrompts.few_shot_prompt(text, event_types, examples)

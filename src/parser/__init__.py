@@ -1,1 +1,1 @@
-# Parser package for 8-K filings 
+# Parser package for 8-K filings

@@ -1,19 +1,39 @@
 # Python SEC 8-K Event Classifier & Scraper
 
-A Python tool for downloading and classifying 8-K filing events using Large Language Models.
+A Python tool for downloading and classifying 8-K filing events using Large Language Models with advanced prompt engineering techniques.
 
-## Quick Start
+## Key Command to Get Started
 
-### 1. Setup
 ```bash
-git clone <repository-url>
-cd python-sec-checker
+# Quick start: Download and classify Tesla's 8-K filings from the last 30 days
+python scrape_and_categorize.py --company tesla
+
+# To see example results, check the extracted_events directory
+ls -la extracted_events/
+```
+
+## Installation & Setup
+
+```bash
+git clone https://github.com/pratyush-chaudhary/sec-8k-event-categorizer
+cd sec-8k-event-categorizer
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Classify a Single 8-K Filing
+## Example Results
+
+Check the `extracted_events/` directory to see example classification results with detailed reasoning and confidence scores. Each filing includes:
+- Event type classification 
+- Relevance assessment
+- Detailed reasoning with Chain-of-Thought analysis
+- Confidence scores
+- Classification timestamps
+
+## Usage Examples
+
+### 1. Classify a Single 8-K Filing
 ```python
 from src.parser.event_classifier import EventClassifier
 from src.parser.text_extractor import Filing8KTextExtractor
@@ -31,9 +51,10 @@ result = classifier.classify(clean_text)
 
 print(f"Event Type: {result.event_type}")
 print(f"Reasoning: {result.reasoning}")
+print(f"Confidence: {result.confidence}")
 ```
 
-### 3. Download & Classify Company Filings
+### 2. Download & Classify Company Filings
 ```bash
 # Download and classify Apple's last 30 days of 8-K filings
 python scrape_and_categorize.py --company apple
@@ -43,6 +64,22 @@ python scrape_and_categorize.py --company tesla --no-classify
 
 # List available companies
 python scrape_and_categorize.py --list-companies
+```
+
+### 3. Use Different Prompt Strategies
+```python
+from src.parser.event_classifier import EventClassifier, PromptStrategy
+
+classifier = EventClassifier()
+
+# Chain-of-Thought prompting for better reasoning
+result = classifier.classify(text, strategy=PromptStrategy.CHAIN_OF_THOUGHT)
+
+# Few-shot learning with examples
+result = classifier.classify(text, strategy=PromptStrategy.FEW_SHOT)
+
+# Basic classification
+result = classifier.classify(text, strategy=PromptStrategy.BASIC)
 ```
 
 ## Configuration
@@ -72,6 +109,11 @@ Create `config/event_config.json`:
     "relevant": true, 
     "description": "Mergers, acquisitions, spin-offs",
     "keywords": ["merger", "acquisition", "spinoff"]
+  },
+  "Product/Service Event": {
+    "relevant": true,
+    "description": "Product launches, service announcements, capacity changes",
+    "keywords": ["product", "launch", "capacity", "production"]
   }
 }
 ```
@@ -88,9 +130,109 @@ ollama pull llama3.1:8b
 ollama serve
 ```
 
-## Output
+## Output Structure
 
-Scraped filings are saved to `data/[CIK]/[filing_directory]/`:
-- `metadata.json` - Filing metadata
-- `[filename].txt` - Raw filing content
-- `classification.json` - Event classification with reasoning 
+Scraped filings are saved to `extracted_events/[CIK]/[filing_directory]/`:
+- `metadata.json` - Filing metadata (CIK, accession number, dates)
+- `classification.json` - Event classification with detailed reasoning and confidence
+- Raw filing content preserved for analysis
+
+## Prompt Engineering & Optimization Approaches
+
+This project implements several advanced prompt engineering techniques to improve classification accuracy and reasoning quality:
+
+### 1. Chain-of-Thought (CoT) Prompting
+
+Our CoT implementation breaks down the classification process into three structured steps:
+
+**Step 1: Identify Key Facts**
+- Extract specific events being reported
+- Identify parties involved
+- Assess financial/business implications
+
+**Step 2: Match to Category**  
+- Evaluate fit against each category
+- Provide comparative reasoning
+- Justify category selection
+
+**Step 3: Assess Significance**
+- Evaluate material impact potential
+- Consider investor relevance
+- Distinguish routine vs. exceptional events
+
+This approach significantly improves reasoning quality and classification accuracy compared to zero-shot prompting.
+
+### 2. Few-Shot Learning with Domain Examples
+
+We provide curated examples of well-classified 8-K events across different categories:
+- Acquisition announcements with financial details
+- Earnings results with growth metrics  
+- Executive appointments with strategic context
+
+Each example includes both the classification and detailed reasoning, helping the model understand the expected output format and reasoning depth.
+
+### 3. Detailed Prompt Engineering
+
+Our detailed prompts include:
+- **Context Setting**: Positioning the LLM as a financial analyst expert
+- **Clear Instructions**: Step-by-step classification guidance
+- **Relevance Criteria**: Explicit definition of what makes events material
+- **Output Structure**: Consistent formatting for parsing and validation
+
+### 4. Multi-Strategy Validation
+
+We implement multiple prompt strategies and can validate results:
+- **Basic**: Simple category matching
+- **Detailed**: Rich context with event descriptions and keywords
+- **CoT**: Step-by-step reasoning process
+- **Few-Shot**: Learning from examples
+
+### 5. Output Validation Logic
+
+**LLM-Based Validation**:
+- Secondary validation prompts to check classification consistency
+- Cross-validation between different prompt strategies
+- Confidence scoring based on reasoning quality
+
+**Python-Based Validation**:
+- Schema validation for output structure
+- Keyword matching against event configurations
+- Relevance scoring using configurable criteria
+- Retry logic with different strategies on parsing failures
+
+### 6. Extensible Architecture
+
+The prompt system is designed for easy extension:
+- **Template-Based**: All prompts use configurable templates
+- **Strategy Pattern**: Easy to add new prompt strategies
+- **Config-Driven**: Event types and criteria defined in JSON
+- **Modular Validation**: Separate validation logic for different aspects
+
+### Areas for Improvement & Future Research
+
+**1. Dynamic Prompt Optimization**
+- A/B testing different prompt variations
+- Automated prompt optimization based on performance metrics
+- Context-aware prompt selection based on filing characteristics
+
+**2. Enhanced Validation Pipeline**
+- Multi-model consensus validation
+- Historical performance tracking for continuous improvement
+- Automated feedback loops from classification results
+
+**3. Domain-Specific Improvements**
+- Industry-specific event type expansion
+- Sector-aware classification with specialized prompts
+- Integration with financial databases for enhanced context
+
+**4. Advanced Prompt Techniques**
+- Self-consistency checking with multiple generations
+- Tool-assisted reasoning with financial calculators
+- Multi-step verification processes for high-stakes classifications
+
+**5. Performance & Scalability**
+- Batch processing optimization for large datasets
+- Caching strategies for similar filings
+- Distributed processing for enterprise-scale deployment
+
+This implementation demonstrates that thoughtful prompt engineering combined with robust validation can significantly improve LLM performance on domain-specific classification tasks. The modular architecture allows for rapid experimentation with new techniques while maintaining production reliability. 

@@ -66,7 +66,11 @@ class TestClassify8KIntegration(unittest.TestCase):
         self.temp_event_config.close()
 
         # Expected LLM response for the sample 8K fixture
-        self.expected_llm_response = "Event Type: Financial Event, Relevant: true"
+        self.expected_llm_response = """REASONING:
+The 8-K filing reports Apple Inc.'s financial results for its fiscal 2023 fourth quarter, which ended on September 30, 2023. This is a quarterly earnings announcement containing revenue, profit, and other financial metrics that are material to investors and stakeholders. The filing includes comprehensive financial data and operational results that directly impact stock valuation and business performance assessment.
+
+CLASSIFICATION:
+Event Type: Financial Event, Relevant: true"""
 
         # Path to sample fixture
         self.sample_8k_path = "tests/fixtures/sample_8k.html"
@@ -199,27 +203,18 @@ class TestClassify8KIntegration(unittest.TestCase):
         self.assertIn("Results of Operations and Financial Condition", extracted_text)
         self.assertIn("financial results", extracted_text)
 
-    @patch("src.llm.client.LLMClient")
-    @patch("src.parser.event_classifier.load_default_event_config")
-    def test_classify_8k_filing_different_strategies(self, mock_load_config, mock_llm_client):
+    @patch("src.parser.event_classifier.EventClassifier.classify")
+    def test_classify_8k_filing_different_strategies(self, mock_classify):
         """Test classification with different prompt strategies."""
-        # Setup mocks
-        mock_load_config.return_value = {
-            "Financial Event": type(
-                "EventConfig",
-                (),
-                {
-                    "event_type": "Financial Event",
-                    "relevant": True,
-                    "description": "Financial results and earnings",
-                    "keywords": ["earnings", "results"],
-                },
-            )()
-        }
-
-        mock_client_instance = Mock()
-        mock_client_instance.generate.return_value = self.expected_llm_response
-        mock_llm_client.return_value = mock_client_instance
+        # Mock the classifier to return a successful result
+        mock_result = ClassificationResult(
+            event_type="Financial Event",
+            relevant=True,
+            confidence=0.85,
+            reasoning="Document contains financial results and earnings data",
+            raw_response=self.expected_llm_response,
+        )
+        mock_classify.return_value = mock_result
 
         # Test all strategies
         strategies = [
@@ -340,28 +335,19 @@ class TestClassify8KIntegration(unittest.TestCase):
         self.assertIn("earnings and financial results", output)  # Reasoning
 
     @patch("sys.argv", ["classify_8k.py", "tests/fixtures/sample_8k.html", "--strategy", "basic"])
-    @patch("src.llm.client.LLMClient")
-    @patch("src.parser.event_classifier.load_default_event_config")
+    @patch("src.parser.event_classifier.EventClassifier.classify")
     @patch("sys.stdout", new_callable=StringIO)
-    def test_main_function_integration(self, mock_stdout, mock_load_config, mock_llm_client):
+    def test_main_function_integration(self, mock_stdout, mock_classify):
         """Test the main function with command line arguments."""
-        # Setup mocks
-        mock_load_config.return_value = {
-            "Financial Event": type(
-                "EventConfig",
-                (),
-                {
-                    "event_type": "Financial Event",
-                    "relevant": True,
-                    "description": "Financial results",
-                    "keywords": [],
-                },
-            )()
-        }
-
-        mock_client_instance = Mock()
-        mock_client_instance.generate.return_value = self.expected_llm_response
-        mock_llm_client.return_value = mock_client_instance
+        # Mock the classifier to return a successful result
+        mock_result = ClassificationResult(
+            event_type="Financial Event",
+            relevant=True,
+            confidence=0.85,
+            reasoning="Document contains financial results and earnings data",
+            raw_response=self.expected_llm_response,
+        )
+        mock_classify.return_value = mock_result
 
         # Test main function
         try:

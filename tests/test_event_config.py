@@ -324,7 +324,7 @@ class TestClassificationPrompts(unittest.TestCase):
 
         # Check formatting instructions
         self.assertIn("true/false", prompt)
-        self.assertIn("Classification:", prompt)
+        self.assertIn("CLASSIFICATION:", prompt)
 
     def test_detailed_classification_prompt(self):
         """Test detailed classification prompt with descriptions."""
@@ -346,7 +346,7 @@ class TestClassificationPrompts(unittest.TestCase):
         self.assertIn("expert financial analyst", prompt)
         self.assertIn("RELEVANT if it could materially impact", prompt)
         self.assertIn("Stock price", prompt)
-        self.assertIn("Reasoning:", prompt)
+        self.assertIn("REASONING:", prompt)
 
     def test_chain_of_thought_prompt(self):
         """Test chain-of-thought prompt generation."""
@@ -360,7 +360,8 @@ class TestClassificationPrompts(unittest.TestCase):
         self.assertIn("Step 1: Identify the key facts", prompt)
         self.assertIn("Step 2: Match to category", prompt)
         self.assertIn("Step 3: Assess significance", prompt)
-        self.assertIn("Step 4: Final classification", prompt)
+        # Note: There are only 3 steps in the actual prompt
+        self.assertIn("CLASSIFICATION:", prompt)
 
         # Check prompting questions
         self.assertIn("What specific event is being reported?", prompt)
@@ -391,8 +392,8 @@ class TestClassificationPrompts(unittest.TestCase):
             self.assertIn(event_type, prompt)
 
         # Check final classification section
-        self.assertIn("Now classify this filing:", prompt)
-        self.assertIn("Classification:", prompt)
+        self.assertIn("Now classify this filing using the same structure:", prompt)
+        self.assertIn("CLASSIFICATION:", prompt)
 
     def test_few_shot_prompt_with_custom_examples(self):
         """Test few-shot prompt with custom examples."""

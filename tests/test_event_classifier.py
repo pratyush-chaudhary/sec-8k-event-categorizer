@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from src.parser.event_classifier import EventClassifier, PromptStrategy
-from src.parser.schema.event_types import ClassificationResult
+from src.parser.schema.event_types import ClassificationResult, validate_classification_result
 
 
 class TestEventClassifier(unittest.TestCase):
@@ -27,6 +27,13 @@ class TestEventClassifier(unittest.TestCase):
         # Mock LLM responses
         self.valid_llm_response = "Event Type: Acquisition, Relevant: true"
         self.invalid_llm_response = "This is not a valid response format"
+        
+        # New structured response format
+        self.structured_llm_response = """REASONING:
+This is a significant acquisition announcement involving a $1.2 billion transaction. The substantial financial value indicates material impact on Apple's financial position and business strategy. This type of major acquisition would likely affect stock price and investor perception of the company's growth strategy.
+
+CLASSIFICATION:
+Event Type: Acquisition, Relevant: true"""
 
     @patch("src.parser.event_classifier.LLMClient")
     def test_classifier_initialization(self, mock_llm_client):
@@ -216,6 +223,67 @@ class TestEventClassifier(unittest.TestCase):
 
         # Should return None when LLM fails
         self.assertIsNone(result)
+
+    @patch("src.parser.event_classifier.LLMClient")
+    def test_classify_with_structured_reasoning(self, mock_llm_client):
+        """Test classification with new structured reasoning-first format."""
+        # Setup mock
+        mock_client_instance = Mock()
+        mock_client_instance.generate.return_value = self.structured_llm_response
+        mock_llm_client.return_value = mock_client_instance
+
+        # Create classifier
+        classifier = EventClassifier(
+            llm_config_path="dummy_llm.json", event_config_dict=self.sample_event_config
+        )
+
+        # Test classification
+        result = classifier.classify(self.sample_text)
+
+        # Verify result
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, ClassificationResult)
+        self.assertEqual(result.event_type, "Acquisition")
+        self.assertTrue(result.relevant)
+        
+        # Verify reasoning was extracted
+        self.assertIsNotNone(result.reasoning)
+        self.assertIn("significant acquisition", result.reasoning.lower())
+        self.assertIn("material impact", result.reasoning.lower())
+
+        # Verify LLM was called
+        mock_client_instance.generate.assert_called_once()
+
+    def test_validate_structured_response_format(self):
+        """Test that the validation function properly parses structured reasoning-first responses."""
+        # Test the new structured format
+        structured_response = """REASONING:
+This is a significant acquisition announcement involving a $1.2 billion transaction. The substantial financial value indicates material impact on Apple's financial position and business strategy.
+
+CLASSIFICATION:
+Event Type: Acquisition, Relevant: true"""
+        
+        event_types = ["Acquisition", "Financial Event", "Personnel Change"]
+        result = validate_classification_result(structured_response, event_types)
+        
+        # Verify parsing worked correctly
+        self.assertIsNotNone(result)
+        self.assertEqual(result.event_type, "Acquisition")
+        self.assertTrue(result.relevant)
+        self.assertIn("significant acquisition", result.reasoning.lower())
+        self.assertIn("material impact", result.reasoning.lower())
+
+    def test_validate_legacy_response_format(self):
+        """Test that the validation function still works with legacy format."""
+        legacy_response = "Event Type: Financial Event, Relevant: true"
+        
+        event_types = ["Acquisition", "Financial Event", "Personnel Change"]
+        result = validate_classification_result(legacy_response, event_types)
+        
+        # Verify parsing worked correctly
+        self.assertIsNotNone(result)
+        self.assertEqual(result.event_type, "Financial Event")
+        self.assertTrue(result.relevant)
 
 
 if __name__ == "__main__":

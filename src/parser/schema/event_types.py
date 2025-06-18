@@ -104,23 +104,39 @@ def validate_classification_result(
     """
     import re
 
-    # Try to parse the result
+    # Extract reasoning section first
+    reasoning = ""
+    reasoning_patterns = [
+        r"REASONING:\s*(.+?)(?=CLASSIFICATION:|$)",
+        r"reasoning:\s*(.+?)(?=classification:|event type:|$)",
+        r"analysis:\s*(.+?)(?=classification:|event type:|$)",
+    ]
+    
+    for pattern in reasoning_patterns:
+        reason_match = re.search(pattern, result, re.IGNORECASE | re.DOTALL)
+        if reason_match:
+            reasoning = reason_match.group(1).strip()
+            # Clean up reasoning text
+            reasoning = re.sub(r'\n+', ' ', reasoning)  # Replace multiple newlines with space
+            reasoning = re.sub(r'\s+', ' ', reasoning)  # Replace multiple spaces with single space
+            break
+
+    # Try to parse the classification result
     # Expected format: "Event Type: [Category], Relevant: [true/false]"
-    pattern = r"Event Type:\s*([^,]+),\s*Relevant:\s*(true|false)"
-    match = re.search(pattern, result, re.IGNORECASE)
+    classification_patterns = [
+        r"Event Type:\s*([^,]+),\s*Relevant:\s*(true|false)",
+        r"CLASSIFICATION:\s*Event Type:\s*([^,]+),\s*Relevant:\s*(true|false)",
+        r"Type:\s*([^,]+),\s*Relevant:\s*(true|false)",
+        r"Classification:\s*([^,]+),\s*Significant:\s*(true|false)",
+        # Fallback patterns
+        r"([^:,\n]+):\s*(true|false|yes|no)",
+    ]
 
-    if not match:
-        # Try alternative formats
-        patterns = [
-            r"([^:]+):\s*(true|false|yes|no)",
-            r"Type:\s*([^,]+),\s*Relevant:\s*(true|false)",
-            r"Classification:\s*([^,]+),\s*Significant:\s*(true|false)",
-        ]
-
-        for alt_pattern in patterns:
-            match = re.search(alt_pattern, result, re.IGNORECASE)
-            if match:
-                break
+    match = None
+    for pattern in classification_patterns:
+        match = re.search(pattern, result, re.IGNORECASE)
+        if match:
+            break
 
     if not match:
         return None
@@ -148,19 +164,19 @@ def validate_classification_result(
     # Parse relevance
     relevant = relevant_str in ["true", "yes", "1"]
 
-    # Extract reasoning if present
-    reasoning = ""
-    reasoning_patterns = [
-        r"reasoning:\s*(.+?)(?:\n|$)",
-        r"because:\s*(.+?)(?:\n|$)",
-        r"explanation:\s*(.+?)(?:\n|$)",
-    ]
+    # If we didn't find reasoning in structured format, try legacy patterns
+    if not reasoning:
+        legacy_reasoning_patterns = [
+            r"reasoning:\s*(.+?)(?:\n|$)",
+            r"because:\s*(.+?)(?:\n|$)",
+            r"explanation:\s*(.+?)(?:\n|$)",
+        ]
 
-    for pattern in reasoning_patterns:
-        reason_match = re.search(pattern, result, re.IGNORECASE | re.DOTALL)
-        if reason_match:
-            reasoning = reason_match.group(1).strip()
-            break
+        for pattern in legacy_reasoning_patterns:
+            reason_match = re.search(pattern, result, re.IGNORECASE | re.DOTALL)
+            if reason_match:
+                reasoning = reason_match.group(1).strip()
+                break
 
     return ClassificationResult(
         event_type=event_type_clean,

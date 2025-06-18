@@ -87,8 +87,15 @@ Step 3: Assess the event's potential market impact
 Step 4: Classify event type based on analysis
 Step 5: Determine significance level with justification
 
-Reasoning: [Your step-by-step analysis]
-Classification: [Final result in JSON]
+REASONING:
+[Your detailed step-by-step analysis including:
+- Key facts identified from the filing
+- Category matching rationale
+- Significance assessment
+- Final justification]
+
+CLASSIFICATION:
+Event Type: [Category], Relevant: [true/false]
 ```
 
 #### 3. Few-Shot Learning

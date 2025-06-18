@@ -25,11 +25,18 @@ class ClassificationPrompts:
 Choose from these categories:
 {", ".join(event_types)}
 
-Provide your answer as 'Event Type: [Category], Relevant: [true/false]'.
+Please provide your response in this exact structure:
 
-The event should be marked as 'Relevant: true' if it could significantly impact the company's stock price or business operations, and 'Relevant: false' if it's a minor administrative or routine matter.
+REASONING:
+[Provide a clear explanation of your analysis, including:
+- What specific event is being reported
+- Key factors that led to your classification decision
+- Why this event is or isn't relevant for investors]
 
-Classification:"""
+CLASSIFICATION:
+Event Type: [Category], Relevant: [true/false]
+
+Begin your analysis:"""
 
         return prompt
 
@@ -86,12 +93,19 @@ An event is NOT RELEVANT if it's:
 - Scheduled/expected announcement
 - Immaterial to business performance
 
-Provide your answer in this exact format:
+Please provide your response in this exact structure:
+
+REASONING:
+[Provide a comprehensive analysis including:
+- Summary of the key event being reported
+- Analysis of which category best fits and why
+- Assessment of materiality and investor impact
+- Justification for relevance determination]
+
+CLASSIFICATION:
 Event Type: [Category], Relevant: [true/false]
 
-Reasoning: [Brief explanation of your decision]
-
-Classification:"""
+Begin your analysis:"""
 
         return prompt
 
@@ -115,8 +129,9 @@ Filing Content:
 Available Categories:
 {", ".join(event_types)}
 
-Please follow these steps:
+Please provide your response in this exact structure:
 
+REASONING:
 Step 1: Identify the key facts
 - What specific event is being reported?
 - Who are the parties involved?
@@ -131,11 +146,10 @@ Step 3: Assess significance
 - Would investors consider this important?
 - Is this routine or exceptional?
 
-Step 4: Final classification
-Provide your final answer as:
+CLASSIFICATION:
 Event Type: [Category], Relevant: [true/false]
 
-Analysis:"""
+Begin your step-by-step analysis:"""
 
         return prompt
 
@@ -158,14 +172,17 @@ Analysis:"""
             examples = [
                 {
                     "text": "Apple Inc. announced the acquisition of XYZ Corp for $1.2 billion...",
+                    "reasoning": "This is a significant acquisition announcement involving a substantial financial transaction. The $1.2 billion value indicates material impact on Apple's financial position and business strategy.",
                     "classification": "Event Type: Acquisition, Relevant: true",
                 },
                 {
-                    "text": "The company announced quarterly earnings results...",
+                    "text": "The company announced quarterly earnings results showing 15% revenue growth...",
+                    "reasoning": "Quarterly earnings with significant growth are highly material to investors as they directly impact stock valuation and demonstrate business performance.",
                     "classification": "Event Type: Financial Event, Relevant: true",
                 },
                 {
                     "text": "John Smith was appointed as new Chief Technology Officer...",
+                    "reasoning": "Executive appointments at the CTO level can signal strategic direction changes and are relevant for investor assessment of company leadership and technology strategy.",
                     "classification": "Event Type: Personnel Change, Relevant: true",
                 },
             ]
@@ -175,18 +192,32 @@ Analysis:"""
         for i, example in enumerate(examples, 1):
             examples_text.append(f"Example {i}:")
             examples_text.append(f"Text: {example['text']}")
-            examples_text.append(f"Classification: {example['classification']}")
+            examples_text.append("REASONING:")
+            examples_text.append(example.get('reasoning', 'Analysis of the key factors and materiality.'))
+            examples_text.append("CLASSIFICATION:")
+            examples_text.append(f"{example['classification']}")
             examples_text.append("")
 
         prompt = f"""Classify 8-K filing events into these categories:
 {", ".join(event_types)}
 
+Here are some examples of the expected format:
+
 {chr(10).join(examples_text)}
 
-Now classify this filing:
+Now classify this filing using the same structure:
+
 Text: {text}
 
-Classification:"""
+Please provide your response in this exact structure:
+
+REASONING:
+[Your detailed analysis here]
+
+CLASSIFICATION:
+Event Type: [Category], Relevant: [true/false]
+
+Begin your analysis:"""
 
         return prompt
 
@@ -212,16 +243,20 @@ Proposed Classification: {classification}
 
 Valid Categories: {", ".join(event_types)}
 
-Questions to consider:
+Please provide your response in this exact structure:
+
+REASONING:
+[Analyze the following questions:
 1. Is the event type correct?
 2. Is the relevance assessment appropriate?
 3. Does the classification make logical sense?
+4. Provide specific justification for your assessment]
 
-Respond with:
-- "VALID" if the classification is correct
-- "INVALID: [reason]" if there are issues
+VALIDATION:
+Status: [VALID or INVALID]
+Issues: [If INVALID, describe the specific problems]
 
-Your assessment:"""
+Begin your validation analysis:"""
 
         return prompt
 

@@ -51,7 +51,7 @@ python classify_8k.py --list-files
 1. **Text Extraction** - Clean text extraction from HTML using BeautifulSoup
 2. **Event Classification** - LLM-based classification using configurable prompts
 3. **Result Validation** - Parse and validate LLM responses
-4. **Output** - Structured results with reasoning
+4. **Output** - Structured results with reasoning-first format
 
 ## Expected Output
 
@@ -69,9 +69,16 @@ CLASSIFICATION:
    Confidence: 85.0%
 
 REASONING:
-   This appears to be a quarterly earnings announcement...
+   This appears to be a quarterly earnings announcement for Apple Inc.
+   The filing contains financial performance data including revenue and 
+   earnings per share. Such announcements are highly material to investors
+   as they directly impact stock valuation and market expectations.
 
 RAW LLM RESPONSE:
+   REASONING:
+   This appears to be a quarterly earnings announcement for Apple Inc...
+   
+   CLASSIFICATION:
    Event Type: Financial Event, Relevant: true
 ============================================================
 ```

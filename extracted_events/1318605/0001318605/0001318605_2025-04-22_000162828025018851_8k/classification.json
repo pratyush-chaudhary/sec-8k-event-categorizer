@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001628280-25-018851",
+  "event_type": "Scheduling Event",
+  "relevant": false,
+  "reasoning": "** The provided filing is an 8-K (a current report) filed by Tesla, Inc. (TSLA) regarding a \"Schedule Event.\" Specifically, it indicates a \"Scheduled event: Scheduled earnings call,\" with a date of 2025-04-22. The filing's metadata, including the context ID 'c-1' points to a reporting date of 2025-04-22. This clearly denotes an anticipated event - the scheduled announcement of earnings results and a corresponding earnings call. Earnings announcements are critically important to investors as they provide insight into the company's financial health and operational performance. The specific mention of a scheduled \"earnings call\" further underscores the significance of this event. Investors closely monitor such calls for management commentary and forward-looking guidance. Therefore, this event\u2019s potential impact on stock price, financial performance, and strategic direction is high, justifying its classification as a relevant event. **",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2025-04-22"
+}

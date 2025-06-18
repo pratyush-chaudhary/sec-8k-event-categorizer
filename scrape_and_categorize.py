@@ -95,8 +95,8 @@ Examples:
                        help="Path to event configuration file")
     
     # Output options
-    parser.add_argument("--data-dir", default="data",
-                       help="Directory to save filings and classifications")
+    parser.add_argument("--data-dir", default="extracted_events",
+                       help="Base directory to save filings and classifications (will create CIK subdirectory)")
     parser.add_argument("--user-agent", 
                        default="Python SEC Scraper 1.0",
                        help="User agent for SEC requests")
@@ -164,6 +164,7 @@ Examples:
         if args.dry_run:
             classify_msg = "with classification" if not args.no_classify else "without classification"
             print(f"\nDry run complete. Would download {len(filings)} filings {classify_msg}.")
+            print(f"Target directory: {Path(args.data_dir) / cik}")
             return 0
         
         # Initialize organizer with classification settings
@@ -175,8 +176,11 @@ Examples:
             "few_shot": PromptStrategy.FEW_SHOT
         }
         
+        # Create CIK-specific subdirectory under extracted_events
+        cik_data_dir = str(Path(args.data_dir) / cik)
+        
         organizer = FilingOrganizer(
-            data_dir=args.data_dir,
+            data_dir=cik_data_dir,
             llm_config_path=args.llm_config,
             event_config_path=args.event_config,
             classify_events=not args.no_classify,
@@ -190,7 +194,7 @@ Examples:
         # Print summary
         print(f"\nProcessing completed!")
         print(f"Successfully processed: {len(saved_paths)}/{len(filings)} filings")
-        print(f"Data directory: {Path(args.data_dir).absolute()}")
+        print(f"Data directory: {Path(cik_data_dir).absolute()}")
         
         if not args.no_classify:
             print(f"Classification strategy: {args.strategy}")

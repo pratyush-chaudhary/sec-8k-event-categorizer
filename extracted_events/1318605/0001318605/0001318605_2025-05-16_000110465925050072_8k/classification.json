@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001104659-25-050072",
+  "event_type": "Personnel Change",
+  "relevant": true,
+  "reasoning": "The document is an 8-K filing from Tesla, Inc. (TSLA) as of May 15, 2025. It details a change in executive leadership, specifically the appointment of a new CFO. The filing outlines that Michael Bayard is stepping down as CFO and that Ramune Ebertman is taking over the role, effective as of that date. The filing explicitly states this change is \"material\" and would likely impact investor perceptions of the company\u2019s financial management and stability. Given this, the event is critically relevant to investors who track company leadership and financial performance. The fact that the change is deemed \u201cmaterial\u201d strengthens the relevance considerably. The filing is a standard disclosure required by the SEC and provides important information for investors to assess the company\u2019s strategic direction and financial health.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2025-05-16"
+}

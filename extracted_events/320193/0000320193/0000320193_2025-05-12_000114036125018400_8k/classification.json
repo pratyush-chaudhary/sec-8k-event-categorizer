@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001140361-25-018400",
+  "event_type": "Capital Market Event",
+  "relevant": true,
+  "reasoning": "The filing describes a series of debt offerings by Apple Inc. \u2013 specifically, the issuance of various bonds with different maturities and interest rates (0.500%, 1.375%, 1.625%, 2.000%, 2.875%, and 3.050%). This constitutes a significant *Capital Market Event*, as it involves raising capital through debt issuance. The issuance of these bonds directly impacts Apple\u2019s financial structure and ability to fund operations and future investments. Given the scale of the offerings and the range of maturities, it represents a material event that could certainly influence investor sentiment and Apple\u2019s stock price. The fact that it\u2019s a major issuer (Apple) makes it particularly relevant. It\u2019s not merely a routine administrative filing or a minor operational change. The event aligns strongly with the \u201cCapital Market Event\u201d category, and the potential for investor impact is substantial.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2025-05-12"
+}

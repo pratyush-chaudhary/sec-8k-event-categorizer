@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001140361-24-040659",
+  "event_type": "Regulatory/Legal Event",
+  "relevant": true,
+  "reasoning": "The filing details a Form 8-K filed by Apple Inc. reporting a \u201cmaterial weakness\u201d in internal controls over financial reporting identified during an audit. This weakness relates to the company\u2019s ability to reliably record and report revenue, particularly concerning sales returns and allowances. The filing specifically mentions a material weakness in the design and operation of internal controls, impacting the company\u2019s financial statement presentation. This is a significant event impacting investor confidence and potentially leading to restatement of financials. The category \u201cRegulatory/Legal Event\u201d is appropriate here because this weakness triggered an audit finding and potentially exposes the company to legal scrutiny regarding its financial reporting practices. The materiality is high due to the impact on financial statements and potentially investor perception. This is a very relevant event that could materially impact stock price and financial performance.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2024-09-10"
+}

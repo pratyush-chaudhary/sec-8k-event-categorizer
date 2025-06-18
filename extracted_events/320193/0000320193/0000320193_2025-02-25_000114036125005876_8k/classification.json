@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001140361-25-005876",
+  "event_type": "Capital Market Event",
+  "relevant": true,
+  "reasoning": "The filing details a series of debt offerings by Apple Inc. to raise capital. Specifically, Apple is issuing a range of fixed-rate notes, including maturities of 3, 5, 7, and 10 years. The debt is being offered to institutional investors. This represents a capital market event \u2013 specifically, a debt issuance. The purpose is to fund Apple\u2019s ongoing operations and potentially for share repurchases. Given the scale of the offerings and the inclusion of multiple maturities, this is a significant financial event with potential implications for Apple\u2019s financial position, leverage, and strategic flexibility. It\u2019s unlikely to be a routine administrative filing or a minor operational change. While scheduled announcements are common for debt offerings, the *issuance* itself is the key event. It has potential to impact investor sentiment and the company\u2019s valuation. Therefore, this falls squarely under the \"Capital Market Event\" category. The fact that the event is being reported necessitates a relevant assessment by investors.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2025-02-25"
+}

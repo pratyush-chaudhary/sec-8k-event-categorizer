@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001140361-24-038403",
+  "event_type": "Capital Market Event",
+  "relevant": true,
+  "reasoning": "The filing details the issuance of various debt securities by Apple Inc. These include notes due 2029, 2031, and 2042, with different interest rates (0.500%, 1.375%, and 3.600% respectively). This is clearly a Capital Market Event, specifically debt issuance. The issuance of debt is a significant financial event that directly impacts Apple\u2019s capital structure, interest expenses, and overall financial risk profile. It\u2019s a key piece of information for investors assessing the company\u2019s financial health and strategy. The specifics of the debt terms\u2014maturity dates and interest rates\u2014provide crucial insight into Apple\u2019s funding plans and risk management. Given the scale of Apple's operations and the financial implications of this debt issuance, it\u2019s a highly relevant event for investors.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2024-08-23"
+}

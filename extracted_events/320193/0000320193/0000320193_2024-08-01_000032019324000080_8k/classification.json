@@ -1,0 +1,9 @@
+{
+  "accession_number": "0000320193-24-000080",
+  "event_type": "Capital Market Event",
+  "relevant": true,
+  "reasoning": "** The filing content is a SEC document, specifically a 10-Q (Quarterly Report) filed by Apple Inc. (AAPL). The report details Apple\u2019s financial performance and provides a summary of key events during the quarter. Crucially, the filing focuses on \u201cNotes due 2025\u201d - various debt instruments issued by the company. The report details the issuance of these notes, providing financial figures related to the debt and discussions about the company\u2019s strategy regarding its debt portfolio. It includes a discussion about the risks associated with this debt and the company's plans to manage its debt obligations. The document is primarily a financial disclosure related to Apple\u2019s capital structure. While there might be elements that could be considered \u2018strategic\u2019 (managing debt is always a strategic decision), the core content revolves around the financial implications of these debt obligations \u2013 a direct impact on the company's balance sheet and financial performance, therefore making the classification of this event as a 'Capital Market Event' the most accurate. Considering the investor impact, the issuance of these notes and the associated risks are directly relevant to investors. The size of the debt, interest rates, and the company's ability to manage the debt will influence investor perception of Apple's financial health and future profitability. The risk assessment component further strengthens the relevance. Therefore, the classification of this event as a 'Capital Market Event' is the most precise and reflects the significant investor implications.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2024-08-01"
+}

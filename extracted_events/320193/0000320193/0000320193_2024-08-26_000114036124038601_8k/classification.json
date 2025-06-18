@@ -1,0 +1,9 @@
+{
+  "accession_number": "0001140361-24-038601",
+  "event_type": "Financial Event",
+  "relevant": true,
+  "reasoning": "The filing is a 10-Q report from Apple Inc. (AAPL) for the third quarter of 2023. The primary event being reported is Apple's financial performance and results for the quarter. The report details revenue, net income, diluted earnings per share, and provides a discussion of the factors impacting the business. This directly relates to investor perception of the company's financial health and future prospects. Given the detail on financials (revenue, earnings, etc.), it clearly falls under the \u201cFinancial Event\u201d category. Furthermore, the report includes discussion of factors impacting the business, which could influence stock price and investor sentiment. Therefore, it is a significant event for investors.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2024-08-26"
+}

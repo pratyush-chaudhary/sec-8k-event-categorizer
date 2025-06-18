@@ -1,0 +1,9 @@
+{
+  "accession_number": "0000320193-24-000120",
+  "event_type": "Capital Market Event",
+  "relevant": true,
+  "reasoning": "** The filing content describes Apple Inc.'s (AAPL) reporting of a certain event related to its debt obligations. Specifically, it details the issuance of a new series of notes due 2025, with varying interest rates (0.000%, 0.875%, 1.625%, etc.). The core of the filing focuses on the terms of these debt instruments\u2014the principal amount, interest rates, maturity dates, and covenants. While there are mentions of other events like the company being an emerging growth company and its trading symbol, the primary focus is on this debt issuance. This issuance represents a significant financial action for Apple, impacting its capital structure and financial risk profile. The details provided about the debt are pertinent to investors who assess a company's financial health, capital structure, and risk management strategies. Therefore, this falls squarely within the \"Capital Market Event\" category. The details regarding the various interest rates and maturity dates will be directly analyzed by investors to determine Apple\u2019s future profitability and the potential impact on its stock price. While it's a routine financial action for a company of Apple's size, it\u2019s crucial for investors. It's not a \u2018minor operational change\u2019 or \u2018scheduled/expected announcement\u2019 and would have a material impact on investor\u2019s decisions.",
+  "confidence": 0.8,
+  "prompt_strategy": "detailed",
+  "classification_timestamp": "2024-10-31"
+}

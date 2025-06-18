@@ -77,8 +77,8 @@ class TestClassify8KIntegration(unittest.TestCase):
     
     def test_real_data_integration_board_appointment(self):
         """Test with real SEC filing URL - board appointment event (no mocking)."""
-        print(f"\n🌐 Testing with real SEC URL: {self.real_sec_url}")
-        print("📋 Expected event type: Personnel Change (board appointment)")
+        print(f"\nTesting with real SEC URL: {self.real_sec_url}")
+        print("Expected event type: Personnel Change (board appointment)")
         
         try:
             # Test the end-to-end pipeline with real data
@@ -112,9 +112,9 @@ class TestClassify8KIntegration(unittest.TestCase):
             
             # Check if it correctly identifies as Personnel Change
             # (This is the expected classification for board appointment)
-            print(f"✅ Classified as: {classification['event_type']}")
-            print(f"✅ Relevant: {classification['relevant']}")
-            print(f"✅ Confidence: {classification['confidence']:.1%}")
+            print(f"Classified as: {classification['event_type']}")
+            print(f"Relevant: {classification['relevant']}")
+            print(f"Confidence: {classification['confidence']:.1%}")
             
             # Verify extracted text contains expected content
             extracted_text = result['extracted_text'].lower()

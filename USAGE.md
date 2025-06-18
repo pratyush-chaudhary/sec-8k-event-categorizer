@@ -57,21 +57,21 @@ python classify_8k.py --list-files
 
 ```
 ============================================================
-🎯 8-K FILING CLASSIFICATION RESULTS
+8-K FILING CLASSIFICATION RESULTS
 ============================================================
-📁 File: tests/fixtures/sample_8k.html
-📊 Strategy: detailed
-📄 Text Length: 2,350 characters
+File: tests/fixtures/sample_8k.html
+Strategy: detailed
+Text Length: 2,350 characters
 
-🏷️  CLASSIFICATION:
+CLASSIFICATION:
    Event Type: Financial Event
-   Relevant: ✅ Yes
+   Relevant: Yes
    Confidence: 85.0%
 
-💭 REASONING:
+REASONING:
    This appears to be a quarterly earnings announcement...
 
-🤖 RAW LLM RESPONSE:
+RAW LLM RESPONSE:
    Event Type: Financial Event, Relevant: true
 ============================================================
 ```

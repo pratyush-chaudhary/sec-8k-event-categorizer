@@ -51,7 +51,7 @@ class EventClassifier:
         self.logger = logging.getLogger(__name__)
         
         # Initialize LLM client
-        self.llm_client = LLMClient(config_file=llm_config_path)
+        self.llm_client = LLMClient(config_path=llm_config_path)
         
         # Load event configuration
         if event_config_dict:

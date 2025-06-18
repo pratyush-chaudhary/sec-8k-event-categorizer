@@ -1,0 +1,32 @@
+{
+  "Acquisition": {
+    "relevant": true,
+    "description": "Mergers, acquisitions, asset purchases, or business combinations",
+    "keywords": ["acquisition", "merger", "purchase", "acquire", "bought", "deal", "takeover"]
+  },
+  "Customer Event": {
+    "relevant": true,
+    "description": "Major customer contracts, partnerships, or customer-related announcements",
+    "keywords": ["contract", "partnership", "customer", "agreement", "deal", "alliance"]
+  },
+  "Personnel Change": {
+    "relevant": true,
+    "description": "Changes in executive leadership, board members, or key personnel",
+    "keywords": ["CEO", "CFO", "president", "director", "appointment", "resignation", "departure", "hire"]
+  },
+  "Financial Event": {
+    "relevant": true,
+    "description": "Earnings announcements, dividend declarations, financial results",
+    "keywords": ["earnings", "results", "revenue", "profit", "dividend", "financial", "quarterly"]
+  },
+  "Scheduling Event": {
+    "relevant": false,
+    "description": "Scheduled events like earnings calls, meetings, or conferences",
+    "keywords": ["schedule", "meeting", "conference", "call", "date", "announce"]
+  },
+  "Other": {
+    "relevant": false,
+    "description": "Events that don't fit into other categories",
+    "keywords": []
+  }
+} 

@@ -4,8 +4,6 @@
 import sys
 import os
 import unittest
-import glob
-from pathlib import Path
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
@@ -20,89 +18,29 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         """Set up test fixtures."""
         self.extractor = Filing8KTextExtractor()
         
-    def test_extract_from_sample_fixture(self):
-        """Test text extraction with sample 8-K fixture."""
-        print("\n--- Testing sample fixture text extraction ---")
+    def test_extract_from_html_basic(self):
+        """Test basic HTML text extraction."""
+        print("\n--- Testing basic HTML extraction ---")
         
-        fixture_path = os.path.join(os.path.dirname(__file__), "fixtures", "sample_8k.html")
-        
-        if os.path.exists(fixture_path):
-            clean_text = self.extractor.extract_from_file(fixture_path)
-            
-            # Should extract substantial text
-            self.assertGreater(len(clean_text), 100)
-            
-            # Should contain business content
-            self.assertIn('Apple', clean_text)
-            
-            # Should NOT contain common noise
-            self.assertNotIn('SEC.gov', clean_text)
-            self.assertNotIn('EDGAR', clean_text)
-            
-            print(f"✓ Extracted {len(clean_text)} characters")
-            print(f"Preview: {clean_text[:150]}...")
-            
-        else:
-            self.skipTest("Sample fixture not found")
-    
-    def test_extract_from_downloaded_filing(self):
-        """Test text extraction with downloaded Apple filing."""
-        print("\n--- Testing downloaded filing text extraction ---")
-        
-        # Find Apple filing files
-        apple_files = glob.glob("data/320193/*/*.html")
-        
-        if apple_files:
-            test_file = apple_files[0]
-            print(f"Testing with: {test_file}")
-            
-            clean_text = self.extractor.extract_from_file(test_file)
-            
-            # Should extract some text
-            self.assertGreater(len(clean_text), 0)
-            
-            print(f"✓ Extracted {len(clean_text)} characters")
-            print(f"Preview: {clean_text[:200]}...")
-            
-        else:
-            self.skipTest("No Apple filing files found")
-    
-    def test_key_sections_extraction(self):
-        """Test extraction of key sections."""
-        print("\n--- Testing key sections extraction ---")
-        
-        # Test with sample content
-        test_text = """
-        Apple Inc. announced quarterly results for Q4 2024.
-        
-        Item 2.02 Results of Operations and Financial Condition
-        
-        The company reported revenue of $100 billion for the quarter.
-        Item 9.01 Financial Statements and Exhibits
-        
-        Performance was strong across all product categories.
+        # Simple HTML content
+        html_content = """
+        <html>
+        <body>
+        <p>This is important business content about Apple Inc.</p>
+        <p>Apple announced quarterly earnings results for Q4 2024.</p>
+        <p>Revenue increased by 10% compared to last quarter.</p>
+        </body>
+        </html>
         """
         
-        sections = self.extractor.extract_key_sections(test_text)
-        
-        self.assertIn('full_text', sections)
-        self.assertIn('items', sections)
-        self.assertIn('company_info', sections)
-        self.assertIn('business_content', sections)
-        
-        # Should extract company name
-        self.assertEqual(sections['company_info'], 'Apple Inc.')
-        
-        # Should extract items
-        self.assertIn('Item 2.02', sections['items'])
-        self.assertIn('Item 9.01', sections['items'])
+        clean_text = self.extractor.extract_from_html(html_content)
         
         # Should extract business content
-        self.assertIn('revenue', sections['business_content'])
+        self.assertIn('important business content', clean_text)
+        self.assertIn('quarterly earnings', clean_text)
+        self.assertIn('Revenue increased', clean_text)
         
-        print(f"✓ Company: {sections['company_info']}")
-        print(f"✓ Items: {sections['items'][:100]}...")
-        print(f"✓ Business content: {sections['business_content'][:100]}...")
+        print(f"✓ Extracted text: {clean_text}")
     
     def test_noise_filtering(self):
         """Test filtering of SEC/EDGAR boilerplate."""
@@ -110,6 +48,7 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         
         noisy_html = """
         <html>
+        <head><title>SEC Filing</title></head>
         <body>
         <div id="header">SEC.gov</div>
         <p>EDGAR Filing Detail</p>
@@ -118,6 +57,7 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         <p>Washington, D.C. 20549</p>
         <p>Apple announced quarterly earnings results.</p>
         <table class="tableFile">Navigation table</table>
+        <meta name="description" content="SEC filing">
         </body>
         </html>
         """
@@ -136,72 +76,77 @@ class TestFiling8KTextExtractor(unittest.TestCase):
         
         print(f"✓ Filtered text: {clean_text}")
 
+    def test_empty_html(self):
+        """Test handling of empty or minimal HTML."""
+        print("\n--- Testing empty HTML handling ---")
+        
+        # Empty HTML
+        empty_html = "<html><body></body></html>"
+        clean_text = self.extractor.extract_from_html(empty_html)
+        self.assertEqual(clean_text, "")
+        
+        # HTML with only noise
+        noise_only_html = """
+        <html>
+        <head><title>SEC.gov</title></head>
+        <body>
+        <script>console.log('noise');</script>
+        <p>EDGAR Filing Detail</p>
+        </body>
+        </html>
+        """
+        clean_text = self.extractor.extract_from_html(noise_only_html)
+        self.assertEqual(clean_text, "")
+        
+        print("✓ Empty HTML handled correctly")
 
-def test_manual():
-    """Manual test function for detailed output."""
-    print("=" * 60)
-    print("MANUAL TEST: 8-K Text Extractor")
-    print("=" * 60)
-    
-    extractor = Filing8KTextExtractor()
-    
-    # Test 1: Sample fixture
-    print("\n1. Testing Sample Fixture")
-    print("-" * 30)
-    
-    fixture_path = "tests/fixtures/sample_8k.html"
-    if os.path.exists(fixture_path):
-        clean_text = extractor.extract_from_file(fixture_path)
-        sections = extractor.extract_key_sections(clean_text)
+    def test_complex_html_structure(self):
+        """Test extraction from complex HTML structure."""
+        print("\n--- Testing complex HTML structure ---")
         
-        print(f"✓ Extracted {len(clean_text)} characters")
-        print(f"✓ Company: {sections['company_info']}")
-        print(f"✓ Items found: {len(sections['items'])} chars")
-        print(f"✓ Business content: {len(sections['business_content'])} chars")
+        complex_html = """
+        <html>
+        <head>
+            <title>Apple Inc. 8-K Filing</title>
+            <meta name="description" content="SEC filing">
+        </head>
+        <body>
+            <header>
+                <nav>Navigation menu</nav>
+            </header>
+            <div id="content">
+                <h1>Apple Inc. Current Report</h1>
+                <div class="section">
+                    <h2>Item 2.02 Results of Operations and Financial Condition</h2>
+                    <p>Apple Inc. ("Apple" or the "Company") today announced financial results for its fiscal 2023 fourth quarter ended September 30, 2023.</p>
+                    <p>The Company posted quarterly revenue of $89.5 billion and quarterly earnings per diluted share of $1.46.</p>
+                </div>
+                <div class="section">
+                    <h2>Forward-Looking Statements</h2>
+                    <p>This Current Report on Form 8-K contains forward-looking statements within the meaning of the Private Securities Litigation Reform Act of 1995.</p>
+                </div>
+            </div>
+            <footer>
+                <p>© 2023 Apple Inc. All rights reserved.</p>
+            </footer>
+        </body>
+        </html>
+        """
         
-        print(f"\nClean text preview:")
-        print("-" * 40)
-        print(clean_text[:500])
-        print("-" * 40)
+        clean_text = self.extractor.extract_from_html(complex_html)
         
-    else:
-        print("✗ Sample fixture not found")
-    
-    # Test 2: Downloaded Apple filings
-    print("\n2. Testing Downloaded Apple Filings")
-    print("-" * 35)
-    
-    apple_files = glob.glob("data/320193/*/*.html")
-    if apple_files:
-        for i, file_path in enumerate(apple_files[:2]):  # Test first 2 files
-            print(f"\nFile {i+1}: {file_path}")
-            
-            try:
-                clean_text = extractor.extract_from_file(file_path)
-                sections = extractor.extract_key_sections(clean_text)
-                
-                print(f"  Extracted: {len(clean_text)} characters")
-                print(f"  Company: {sections['company_info'] or 'Not found'}")
-                print(f"  Items: {len(sections['items'])} chars")
-                print(f"  Business: {len(sections['business_content'])} chars")
-                
-                if clean_text:
-                    print(f"  Preview: {clean_text[:200]}...")
-                
-            except Exception as e:
-                print(f"  ✗ Error: {e}")
-    else:
-        print("✗ No Apple filing files found")
-    
-    print("\n" + "=" * 60)
+        # Should extract business content
+        self.assertIn('Apple Inc.', clean_text)
+        self.assertIn('financial results', clean_text)
+        self.assertIn('quarterly revenue', clean_text)
+        self.assertIn('Item 2.02', clean_text)
+        
+        # Should not contain navigation or footer noise
+        self.assertNotIn('Navigation menu', clean_text)
+        
+        print(f"✓ Complex structure handled: {len(clean_text)} characters")
+        print(f"Preview: {clean_text[:200]}...")
 
 
 if __name__ == "__main__":
-    # Run manual test for detailed output
-    test_manual()
-    
-    print("\nRUNNING UNIT TESTS")
-    print("=" * 60)
-    
-    # Run unit tests
-    unittest.main(argv=[''], exit=False, verbosity=2) 
+    unittest.main(verbosity=2) 

@@ -15,6 +15,7 @@ import sys
 import argparse
 import logging
 import requests
+import time
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
@@ -24,7 +25,6 @@ from src.parser.event_classifier import EventClassifier, PromptStrategy
 
 # SEC access configuration
 HEADERS = {"User-Agent": "about@plux.ai"}
-BASE_SEC_URL = "https://www.sec.gov/Archives/edgar/data"
 
 
 def setup_logging(verbose: bool = False):
@@ -60,7 +60,6 @@ def download_filing_content(url: str) -> str:
         requests.RequestException: If download fails
     """
     # Add a small delay to be respectful to SEC servers
-    import time
     time.sleep(1)
     
     response = requests.get(url, headers=HEADERS, timeout=30)
@@ -124,9 +123,9 @@ def classify_8k_filing(
             return None
         
         # Step 4: Prepare results
-        logger.info(f"Classification successful!")
+        logger.info("Classification successful!")
         
-        results = {
+        return {
             'input_source': input_source,
             'source_type': source_type,
             'strategy': strategy.value,
@@ -140,8 +139,6 @@ def classify_8k_filing(
                 'raw_response': result.raw_response
             }
         }
-        
-        return results
         
     except FileNotFoundError:
         logger.error(f"File not found: {input_source}")
@@ -167,7 +164,6 @@ def print_results(results: dict):
     print("8-K FILING CLASSIFICATION RESULTS")
     print("="*60)
     
-    source_type = results.get('source_type', 'File')
     print(f"Source: {results['input_source']}")
     print(f"Strategy: {results['strategy']}")
     print(f"Text Length: {results['text_length']:,} characters")
@@ -266,8 +262,7 @@ Examples:
         print("\nUse --list-files to see available files or provide a valid SEC URL")
         sys.exit(1)
     
-    print(f"Starting 8-K classification pipeline...")
-    source_type = "URL" if is_url(args.input_source) else "File"
+    print("Starting 8-K classification pipeline...")
     print(f"Source: {args.input_source}")
     print(f"Strategy: {args.strategy}")
     

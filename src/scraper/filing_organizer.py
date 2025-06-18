@@ -66,8 +66,8 @@ class FilingOrganizer:
         # Save raw content if available
         if hasattr(filing_info, '_raw_content') and filing_info._raw_content:
             raw_file = filing_dir / f"{filing_info.get_filename()}.txt"
-            with open(raw_file, "w", encoding="utf-8") as f:
-                f.write(filing_info._raw_content)
+            # with open(raw_file, "w", encoding="utf-8") as f:
+            #     f.write(filing_info._raw_content)
             
             # Perform event classification
             if self.classify_events:

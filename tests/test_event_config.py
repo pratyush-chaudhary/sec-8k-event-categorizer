@@ -30,6 +30,11 @@ class TestEventConfig(unittest.TestCase):
             "Customer Event",
             "Personnel Change",
             "Financial Event",
+            "Regulatory/Legal Event",
+            "Corporate Restructuring",
+            "Capital Market Event",
+            "Product/Service Event",
+            "Strategic Alliance",
             "Scheduling Event",
             "Other",
         }
@@ -53,7 +58,7 @@ class TestEventConfig(unittest.TestCase):
         config = load_default_event_config()
 
         # Check that all expected event types are loaded
-        self.assertEqual(len(config), 6)
+        self.assertEqual(len(config), 11)
         self.assertEqual(set(config.keys()), self.expected_event_types)
 
         # Check that each event type has proper EventConfig structure
@@ -73,6 +78,32 @@ class TestEventConfig(unittest.TestCase):
         scheduling = config["Scheduling Event"]
         self.assertFalse(scheduling.relevant)
         self.assertIn("schedule", scheduling.keywords)
+
+        # Test new event types
+        regulatory = config["Regulatory/Legal Event"]
+        self.assertTrue(regulatory.relevant)
+        self.assertIn("lawsuit", regulatory.keywords)
+        self.assertIn("SEC", regulatory.keywords)
+
+        restructuring = config["Corporate Restructuring"]
+        self.assertTrue(restructuring.relevant)
+        self.assertIn("bankruptcy", restructuring.keywords)
+        self.assertIn("spin-off", restructuring.keywords)
+
+        capital_market = config["Capital Market Event"]
+        self.assertTrue(capital_market.relevant)
+        self.assertIn("offering", capital_market.keywords)
+        self.assertIn("debt", capital_market.keywords)
+
+        product_service = config["Product/Service Event"]
+        self.assertTrue(product_service.relevant)
+        self.assertIn("product launch", product_service.keywords)
+        self.assertIn("recall", product_service.keywords)
+
+        strategic_alliance = config["Strategic Alliance"]
+        self.assertTrue(strategic_alliance.relevant)
+        self.assertIn("joint venture", strategic_alliance.keywords)
+        self.assertIn("collaboration", strategic_alliance.keywords)
 
     def test_load_event_config_from_dict(self):
         """Test loading event configuration from a dictionary."""
@@ -276,6 +307,46 @@ class TestEventConfig(unittest.TestCase):
             self.assertIsInstance(config["relevant"], bool)
             self.assertIsInstance(config["description"], str)
             self.assertIsInstance(config["keywords"], list)
+
+    def test_new_event_types_validation(self):
+        """Test validation with the new event types."""
+        config = load_default_event_config()
+        valid_types = list(config.keys())
+
+        # Test Regulatory/Legal Event
+        result_text = "Event Type: Regulatory/Legal Event, Relevant: true"
+        parsed = validate_classification_result(result_text, valid_types)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed.event_type, "Regulatory/Legal Event")
+        self.assertTrue(parsed.relevant)
+
+        # Test Corporate Restructuring
+        result_text = "Event Type: Corporate Restructuring, Relevant: true"
+        parsed = validate_classification_result(result_text, valid_types)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed.event_type, "Corporate Restructuring")
+        self.assertTrue(parsed.relevant)
+
+        # Test Capital Market Event
+        result_text = "Event Type: Capital Market Event, Relevant: true"
+        parsed = validate_classification_result(result_text, valid_types)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed.event_type, "Capital Market Event")
+        self.assertTrue(parsed.relevant)
+
+        # Test Product/Service Event
+        result_text = "Event Type: Product/Service Event, Relevant: true"
+        parsed = validate_classification_result(result_text, valid_types)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed.event_type, "Product/Service Event")
+        self.assertTrue(parsed.relevant)
+
+        # Test Strategic Alliance
+        result_text = "Event Type: Strategic Alliance, Relevant: true"
+        parsed = validate_classification_result(result_text, valid_types)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed.event_type, "Strategic Alliance")
+        self.assertTrue(parsed.relevant)
 
 
 class TestClassificationPrompts(unittest.TestCase):

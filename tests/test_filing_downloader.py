@@ -17,7 +17,9 @@ class TestFiling8KDownloader(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures."""
-        self.downloader = Filing8KDownloader(data_dir="test_data")
+        # Use test data directory within tests folder
+        test_data_dir = os.path.join(os.path.dirname(__file__), "test_data")
+        self.downloader = Filing8KDownloader(data_dir=test_data_dir)
         self.apple_cik = "320193"
         
     def tearDown(self):

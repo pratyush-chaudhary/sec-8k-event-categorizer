@@ -89,10 +89,11 @@ Create `config/llm_config.json`:
 ```json
 {
   "provider": "ollama",
-  "model": "llama3.1:8b", 
-  "base_url": "http://localhost:11434",
-  "temperature": 0.1,
-  "max_tokens": 1000
+  "model": "gemma3:latest",
+  "options": {
+    "temperature": 0.7,
+    "timeout": 30
+  }
 }
 ```
 
@@ -100,20 +101,60 @@ Create `config/llm_config.json`:
 Create `config/event_config.json`:
 ```json
 {
+  "Acquisition": {
+    "relevant": true,
+    "description": "Mergers, acquisitions, asset purchases, or business combinations",
+    "keywords": ["acquisition", "merger", "purchase", "acquire", "bought", "deal", "takeover"]
+  },
+  "Customer Event": {
+    "relevant": true,
+    "description": "Major customer contracts, partnerships, or customer-related announcements",
+    "keywords": ["contract", "partnership", "customer", "agreement", "deal", "alliance"]
+  },
+  "Personnel Change": {
+    "relevant": true,
+    "description": "Changes in executive leadership, board members, or key personnel",
+    "keywords": ["CEO", "CFO", "president", "director", "appointment", "resignation", "departure", "hire"]
+  },
   "Financial Event": {
     "relevant": true,
-    "description": "Earnings, financial results, guidance",
-    "keywords": ["earnings", "revenue", "profit", "guidance"]
+    "description": "Earnings announcements, dividend declarations, financial results",
+    "keywords": ["earnings", "results", "revenue", "profit", "dividend", "financial", "quarterly"]
   },
-  "Corporate Action": {
-    "relevant": true, 
-    "description": "Mergers, acquisitions, spin-offs",
-    "keywords": ["merger", "acquisition", "spinoff"]
+  "Regulatory/Legal Event": {
+    "relevant": true,
+    "description": "Legal proceedings, SEC investigations, regulatory approvals/denials, compliance issues",
+    "keywords": ["lawsuit", "litigation", "SEC", "investigation", "regulatory", "compliance", "violation", "settlement", "FDA approval", "patent"]
+  },
+  "Corporate Restructuring": {
+    "relevant": true,
+    "description": "Spin-offs, divestitures, bankruptcies, reorganizations, subsidiary sales",
+    "keywords": ["spin-off", "divestiture", "bankruptcy", "restructuring", "subsidiary", "reorganization", "liquidation"]
+  },
+  "Capital Market Event": {
+    "relevant": true,
+    "description": "Stock offerings, debt issuance, credit agreements, share buybacks, dividend changes",
+    "keywords": ["offering", "debt", "credit agreement", "buyback", "repurchase", "bond", "loan", "financing", "dividend"]
   },
   "Product/Service Event": {
     "relevant": true,
-    "description": "Product launches, service announcements, capacity changes",
-    "keywords": ["product", "launch", "capacity", "production"]
+    "description": "Major product launches, recalls, regulatory approvals (especially pharma/biotech)",
+    "keywords": ["product launch", "recall", "FDA", "approval", "drug", "clinical trial", "patent approval"]
+  },
+  "Strategic Alliance": {
+    "relevant": true,
+    "description": "Joint ventures, strategic partnerships, licensing deals (broader than customer events)",
+    "keywords": ["joint venture", "strategic partnership", "licensing", "collaboration", "alliance", "technology transfer"]
+  },
+  "Scheduling Event": {
+    "relevant": false,
+    "description": "Scheduled events like earnings calls, meetings, or conferences",
+    "keywords": ["schedule", "meeting", "conference", "call", "date", "announce"]
+  },
+  "Other": {
+    "relevant": false,
+    "description": "Events that don't fit into other categories",
+    "keywords": []
   }
 }
 ```
